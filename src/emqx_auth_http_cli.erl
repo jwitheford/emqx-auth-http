@@ -23,7 +23,10 @@
 %%--------------------------------------------------------------------
 
 request(get, Url, Params) ->
-    Req = {Url ++ "?" ++ cow_qs:qs(bin_kw(Params)), []},
+    {_, Token} = lists:keyfind("password", 1, Params),
+    {_, Username} = lists:keyfind("username", 1, Params),
+    Realm = lists:nth(1, string:split(Username, "_")),
+    Req = {string:replace(Url, "REALM", Realm), [{"Authorization", "Bearer " ++ Token}, {"albi-client-type", "albi_internal"}]},
     reply(request_(get, Req, [{autoredirect, true}], [], 0));
 
 request(post, Url, Params) ->
