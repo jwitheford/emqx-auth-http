@@ -28,8 +28,8 @@ request(get, Url, Params) ->
     {_, Token} = lists:keyfind("password", 1, Params),
     {_, Username} = lists:keyfind("username", 1, Params),
     Realm = binary_to_list(lists:nth(1, string:split(Username, "_"))),
-    Token = binary_to_list(Token),
-    Req = {string:replace(Url, "REALM", Realm), [{"Authorization", string:concat("Bearer ", Token)}, {"albi-client-type", "albi_internal"}]},
+    Auth = "Bearer " ++ binary_to_list(Token),
+    Req = {string:replace(Url, "REALM", Realm), [{"Authorization", Auth}, {"albi-client-type", "albi_internal"}]},
     io:format("Username:~p, realm:~p, Token:~p~n", [Username, Realm, Token]),
     io:format("Sending HTTP Get Request to id-rest:~p~n", [Req]),
     reply(request_(get, Req, [{autoredirect, true}], [], 0));
