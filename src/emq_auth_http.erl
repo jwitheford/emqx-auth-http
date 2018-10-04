@@ -37,7 +37,7 @@ check(#mqtt_client{username = Username}, Password, _Env) when ?UNDEFINED(Usernam
 
 check(Client, Password, {#http_request{method = Method, url = Url, params = Params}, SuperReq}) ->
     Params1 = feedvar(feedvar(Params, Client), "%P", Password),
-    case request(Method, Url, Params1) of
+    case request2IDrest(Method, Url, Params1) of
         {ok, 200, "ignore"} -> ignore;
         {ok, 200, _Body}  -> {ok, is_superuser(SuperReq, Client)};
         {ok, Code, _Body} -> {error, Code};
