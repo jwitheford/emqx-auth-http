@@ -25,12 +25,15 @@
 %%--------------------------------------------------------------------
 
 request(get, Url, Params) ->
+    %%  token is passed as password in MQTT client
     {_, Token} = lists:keyfind("password", 1, Params),
+    %% realmID_puffID is passed as username in MQTT client
     {_, Username} = lists:keyfind("username", 1, Params),
     Realm = binary_to_list(lists:nth(1, string:split(Username, "_"))),
+    
     Auth = "Bearer " ++ binary_to_list(Token),
-    Req = {string:replace(Url, "REALM", Realm), [{"Authorization", Auth}, {"albi-client-type", "albi_internal"}]},
-    io:format("Username:~p, realm:~p, Token:~p~n", [Username, Realm, Token]),
+    LoginUrl = string:join(string:replace(Url, "{}", Realm), ""),
+    Req = {LoginUrl, [{"Authorization", Auth}, {"albi-client-type", "albi_internal"}]},
     io:format("Sending HTTP Get Request to id-rest:~p~n", [Req]),
     reply(request_(get, Req, [{autoredirect, true}], [], 0));
 
