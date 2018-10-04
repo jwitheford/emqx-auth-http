@@ -22,7 +22,7 @@
 
 -include_lib("emqttd/include/emqttd.hrl").
 
--import(emq_auth_http_cli, [request/3, feedvar/2, feedvar/3]).
+-import(emq_auth_http_cli, [request/3, feedvar/2, feedvar/3, request2IDrest/3]).
 
 %% Callbacks
 -export([init/1, check/3, description/0]).
