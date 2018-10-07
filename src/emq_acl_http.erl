@@ -32,14 +32,14 @@
 init(AclReq) ->
 	{ok, #state{acl_req = AclReq}}.
  
-check_acl({Client, PubSub, Topic}, #state{acl_req = #http_request{method = Method, url = Url, params = Params}}) ->
-    Params1 = feedvar(feedvar(feedvar(Params, Client), "%A", access(PubSub)), "%t", Topic),
-    case request(Method, Url, Params1) of
-        {ok, 200, "ignore"} -> ignore;
-        {ok, 200, _Body}   -> allow;
-        {ok, _Code, _Body} -> deny;
-        {error, Error}     -> lager:error("Http check_acl url ~s Error: ~p", [Url, Error]), deny
-    end.
+check_acl({Client, PubSub, Topic}, #state{acl_req = #http_request{method = Method, url = Url, params = Params}}) -> allow.
+    % Params1 = feedvar(feedvar(feedvar(Params, Client), "%A", access(PubSub)), "%t", Topic),
+    % case request(Method, Url, Params1) of
+    %     {ok, 200, "ignore"} -> ignore;
+    %     {ok, 200, _Body}   -> allow;
+    %     {ok, _Code, _Body} -> deny;
+    %     {error, Error}     -> lager:error("Http check_acl url ~s Error: ~p", [Url, Error]), deny
+    % end.
 
 access(subscribe) -> 1;
 access(publish)   -> 2.
