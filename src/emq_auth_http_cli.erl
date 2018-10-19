@@ -55,13 +55,13 @@ request_(Method, Req, HTTPOpts, Opts, Times) ->
     end.
 
 reply({ok, {{_, Code, _}, _Headers, Body}}) ->
-    lager:error("Receiving ok response from id-rest code:~p, headers:~p, body:~p", [Code, _Headers, Body]),
+    lager:debug("Receiving ok response from id-rest code:~p, headers:~p, body:~p", [Code, _Headers, Body]),
     {ok, Code, Body};
 reply({ok, Code, Body}) ->
-    lager:error("Receiving ok response from id-rest code:~p, body:~p", [Code, Body]),
+    lager:debug("Receiving ok response from id-rest code:~p, body:~p", [Code, Body]),
     {ok, Code, Body};
 reply({error, Error}) ->
-    lager:error("Receiving error response from id-rest error:~p", [Error]),
+    lager:debug("Receiving error response from id-rest error:~p", [Error]),
     {error, Error}.
 
 %%--------------------------------------------------------------------
