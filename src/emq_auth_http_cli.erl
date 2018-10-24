@@ -37,7 +37,7 @@ request2IDrest(get, Url, Params) ->
     Req = {LoginUrl, [{"TE", "peiyi"}, {"dummy", "xxx"}, {"X-Albi-Client-Type", "albi_internal"}, {"Authorization", Auth}]},
     lager:debug("Reaching out to id-rest to verify token: ~p", [Auth]),
     lager:debug("Req: ~p", [Req]),
-    reply(request_(get, Req, [{autoredirect, true}], [], 0)).
+    reply(request_(get, Req, [{autoredirect, true}], [headers_as_is, true], 0)).
 
 request(get, Url, Params) ->
     Req = {Url ++ "?" ++ mochiweb_util:urlencode(Params), []},
