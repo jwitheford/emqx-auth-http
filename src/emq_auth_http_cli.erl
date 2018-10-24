@@ -33,10 +33,10 @@ request2IDrest(get, Url, Params) ->
 
     Auth = "Bearer " ++ binary_to_list(Token),
     LoginUrl = string:join(string:replace(Url, "{}", Realm), ""),
-    Req = {LoginUrl, [{"Authorization", Auth}, {"User-Agent", "albi-client-type"}]},
+    Req = {LoginUrl, [{"Authorization", Auth}, {"User-Agent", "albi_internal"}]},
     lager:debug("Reaching out to id-rest to verify token: ~p", [Auth]),
     lager:debug("Req: ~p", [Req]),
-    reply(request_(get, Req, [{autoredirect, true}], [headers_as_is, true], 0)).
+    reply(request_(get, Req, [{autoredirect, true}], [], 0)).
 
 request(get, Url, Params) ->
     Req = {Url ++ "?" ++ mochiweb_util:urlencode(Params), []},
