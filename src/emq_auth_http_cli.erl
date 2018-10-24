@@ -33,7 +33,7 @@ request2IDrest(get, Url, Params) ->
 
     Auth = "Bearer " ++ binary_to_list(Token),
     LoginUrl = string:join(string:replace(Url, "{}", Realm), ""),
-    Req = {LoginUrl, [{"Authorization", Auth}]},
+    Req = {LoginUrl, [{"Authorization", Auth}, {"User-Agent": "albi-client-type"}]},
     lager:debug("Reaching out to id-rest to verify token: ~p", [Auth]),
     lager:debug("Req: ~p", [Req]),
     reply(request_(get, Req, [{autoredirect, true}], [headers_as_is, true], 0)).
