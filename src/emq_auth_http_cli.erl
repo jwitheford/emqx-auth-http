@@ -35,7 +35,6 @@ request2IDrest(get, Url, Params) ->
     LoginUrl = string:join(string:replace(Url, "{}", Realm), ""),
     Req = {LoginUrl, [{"Authorization", Auth}, {"User-Agent", "albi_internal"}]},
     lager:debug("Reaching out to id-rest to verify token: ~p", [Auth]),
-    lager:debug("Req: ~p", [Req]),
     reply(request_(get, Req, [{autoredirect, true}], [], 0)).
 
 request(get, Url, Params) ->
@@ -56,13 +55,13 @@ request_(Method, Req, HTTPOpts, Opts, Times) ->
     end.
 
 reply({ok, {{_, Code, _}, _Headers, Body}}) ->
-    lager:debug("Receiving ok response from id-rest code:~p, headers:~p, body:~p", [Code, _Headers, Body]),
+    lager:debug("Receiving ok response code:~p, headers:~p, body:~p", [Code, _Headers, Body]),
     {ok, Code, Body};
 reply({ok, Code, Body}) ->
-    lager:debug("Receiving ok response from id-rest code:~p, body:~p", [Code, Body]),
+    lager:debug("Receiving ok response code:~p, body:~p", [Code, Body]),
     {ok, Code, Body};
 reply({error, Error}) ->
-    lager:debug("Receiving error response from id-rest error:~p", [Error]),
+    lager:debug("Receiving error response error:~p", [Error]),
     {error, Error}.
 
 %%--------------------------------------------------------------------
