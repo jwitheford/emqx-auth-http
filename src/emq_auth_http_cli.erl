@@ -31,6 +31,8 @@ request2IDrest(get, Url, Params) ->
     {_, Username} = lists:keyfind("username", 1, Params),
     Realm = binary_to_list(lists:nth(1, string:split(Username, "_"))),
 
+    DecodedToken = base64url:decode(Token),
+    lager:debug("Decoded token: ~p", [DecodedToken]),
     Auth = "Bearer " ++ binary_to_list(Token),
     LoginUrl = string:join(string:replace(Url, "{}", Realm), ""),
     Req = {LoginUrl, [{"Authorization", Auth}, {"User-Agent", "albi_internal"}]},
