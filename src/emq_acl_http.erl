@@ -39,10 +39,10 @@ check_acl({Client, PubSub, Topic}, #state{acl_req = #http_request{method = Metho
     RealmFromTopic = lists:nth(1, string:split(Topic, "/")),
     if
         RealmFromUsername == RealmFromTopic -> 
-            lager:debug("Realm from topic: ~p matches realm:~p", [Topic, RealmFromUsername]),
+            lager:debug("Realm:~p from topic matches realm:~p", [RealmFromTopic, RealmFromUsername]),
             allow;
         true -> 
-            lager:error("Realm from topic: ~p mismatches realm:~p", [Topic, RealmFromUsername]),
+            lager:error("Realm:~p from topic mismatches realm:~p", [RealmFromTopic, RealmFromUsername]),
             deny       
     end.
 
