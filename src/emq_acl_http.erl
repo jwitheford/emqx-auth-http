@@ -38,12 +38,16 @@ check_acl({Client, PubSub, Topic}, #state{acl_req = #http_request{method = Metho
     RealmFromUsername = lists:nth(1, string:split(Username, "_")),
     RealmFromTopic = lists:nth(1, string:split(Topic, "/")),
     if
-        RealmFromUsername == RealmFromTopic -> 
-            lager:debug("Realm:~p from topic matches realm:~p", [RealmFromTopic, RealmFromUsername]),
-            allow;
-        true -> 
-            lager:error("Realm:~p from topic mismatches realm:~p", [RealmFromTopic, RealmFromUsername]),
-            deny       
+        Username == <<"jwt">> -> allow;
+        true ->
+        if
+            RealmFromUsername == RealmFromTopic -> 
+                lager:debug("Realm:~p from topic matches realm:~p", [RealmFromTopic, RealmFromUsername]),
+                allow;
+            true -> 
+                lager:error("Realm:~p from topic mismatches realm:~p", [RealmFromTopic, RealmFromUsername]),
+                deny
+        end    
     end.
 
 access(subscribe) -> 1;
