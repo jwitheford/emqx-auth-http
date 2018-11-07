@@ -34,7 +34,7 @@ init(AclReq) ->
  
 check_acl({Client, PubSub, Topic}, #state{acl_req = #http_request{method = Method, url = Url, params = Params}}) ->
     Params1 = feedvar(feedvar(feedvar(Params, Client), "%A", access(PubSub)), "%t", Topic),
-    {_, Username} = lists:keyfind("username", 1, Params),
+    {_, Username} = lists:keyfind("username", 1, Params1),
     RealmFromUsername = binary_to_list(lists:nth(1, string:split(Username, "_"))),
     RealmFromTopic = lists:nth(1, string:split(Topic, "/")),
     if
