@@ -20,7 +20,7 @@
 
 -include_lib("emqx/include/emqx.hrl").
 
--import(emqx_auth_http_cli, [request/3, feedvar/2, feedvar/3, , request2IDrest/3]).
+-import(emqx_auth_http_cli, [request/3, feedvar/2, feedvar/3, request2IDrest/3]).
 
 %% Callbacks
 -export([init/1, check/3, description/0]).
