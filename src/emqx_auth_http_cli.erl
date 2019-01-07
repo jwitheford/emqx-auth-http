@@ -16,18 +16,27 @@
 
 -include_lib("emqx/include/emqx.hrl").
 
--export([request/3, feedvar/2, feedvar/3]).
+-export([request/3, feedvar/2, feedvar/3, request2IDrest/3]).
 
 %%--------------------------------------------------------------------
 %% HTTP Request
 %%--------------------------------------------------------------------
 
-request(get, Url, Params) ->
+request2IDrest(get, Url, Params) ->
+    %%  token is passed as password in MQTT client
     {_, Token} = lists:keyfind("password", 1, Params),
+    %% realmID_puffID is passed as username in MQTT client
     {_, Username} = lists:keyfind("username", 1, Params),
-    Realm = lists:nth(1, string:split(Username, "_")),
-    Req = {string:replace(Url, "REALM", Realm), [{"Authorization", string:concat("Bearer ", Token)}, {"albi-client-type", "albi_internal"}]},
-    io:format("Sending HTTP Get Request to id-rest:~p~n", [Req]),
+    Realm = binary_to_list(lists:nth(1, string:split(Username, "_"))),
+
+    Auth = "Bearer " ++ binary_to_list(Token),
+    LoginUrl = string:join(string:replace(Url, "{}", Realm), ""),
+    Req = {LoginUrl, [{"Authorization", Auth}, {"User-Agent", "albi_internal"}]},
+    lager:debug("Reaching out to id-rest to verify token: ~p", [Auth]),
+    reply(request_(get, Req, [{autoredirect, true}], [], 0)).
+
+request(get, Url, Params) ->
+    Req = {Url ++ "?" ++ mochiweb_util:urlencode(Params), []},
     reply(request_(get, Req, [{autoredirect, true}], [], 0));
 
 request(post, Url, Params) ->
@@ -44,10 +53,13 @@ request_(Method, Req, HTTPOpts, Opts, Times) ->
     end.
 
 reply({ok, {{_, Code, _}, _Headers, Body}}) ->
+    lager:debug("Receiving ok response code:~p, headers:~p, body:~p", [Code, _Headers, Body]),
     {ok, Code, Body};
 reply({ok, Code, Body}) ->
+    lager:debug("Receiving ok response code:~p, body:~p", [Code, Body]),
     {ok, Code, Body};
 reply({error, Error}) ->
+    lager:debug("Receiving error response error:~p", [Error]),
     {error, Error}.
 
 %% TODO: move this conversion to cuttlefish config and schema

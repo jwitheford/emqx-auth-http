@@ -20,7 +20,7 @@
 
 -include_lib("emqx/include/emqx.hrl").
 
--import(emqx_auth_http_cli, [request/3, feedvar/2, feedvar/3]).
+-import(emqx_auth_http_cli, [request/3, feedvar/2, feedvar/3, , request2IDrest/3]).
 
 %% Callbacks
 -export([init/1, check/3, description/0]).
@@ -36,7 +36,7 @@ check(#{username := Username}, Password, _Env) when ?UNDEFINED(Username); ?UNDEF
 check(Credentials, Password, #{auth_req := #http_request{method = Method, url = Url, params = Params},
                                super_req := SuperReq}) ->
     Params1 = feedvar(feedvar(Params, Credentials), "%P", Password),
-    case request(Method, Url, Params1) of
+    case request2IDrest(Method, Url, Params1) of
         {ok, 200, "ignore"} -> ignore;
         {ok, 200, _Body}  -> {ok, is_superuser(SuperReq, Credentials)};
         {ok, Code, _Body} -> {error, Code};

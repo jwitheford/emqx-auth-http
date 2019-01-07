@@ -33,12 +33,20 @@ check_acl({Credentials, PubSub, Topic}, #{acl_req := #http_request{
                                             url = Url,
                                             params = Params}}) ->
     Params1 = feedvar(feedvar(feedvar(Params, Credentials), "%A", access(PubSub)), "%t", Topic),
-    case request(Method, Url, Params1) of
-        {ok, 200, "ignore"} -> ignore;
-        {ok, 200, _Body}   -> allow;
-        {ok, _Code, _Body} -> deny;
-        {error, Error}     -> logger:error("Http check_acl url ~s Error: ~p", [Url, Error]),
-                              deny
+    {_, Username} = lists:keyfind("username", 1, Params1),
+    RealmFromUsername = lists:nth(1, string:split(Username, "_")),
+    RealmFromTopic = lists:nth(1, string:split(Topic, "/")),
+    if
+        Username == <<"jwt">> -> allow;
+        true ->
+        if
+            RealmFromUsername == RealmFromTopic -> 
+                lager:debug("Realm:~p from topic matches realm:~p", [RealmFromTopic, RealmFromUsername]),
+                allow;
+            true -> 
+                lager:error("Realm:~p from topic mismatches realm:~p", [RealmFromTopic, RealmFromUsername]),
+                deny
+        end
     end.
 
 access(subscribe) -> 1;
