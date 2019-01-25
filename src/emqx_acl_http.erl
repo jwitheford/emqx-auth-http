@@ -41,10 +41,10 @@ check_acl({Credentials, PubSub, Topic}, #{acl_req := #http_request{
         true ->
         if
             RealmFromUsername == RealmFromTopic -> 
-                lager:debug("Realm:~p from topic matches realm:~p", [RealmFromTopic, RealmFromUsername]),
+                logger:debug("Realm:~p from topic matches realm:~p", [RealmFromTopic, RealmFromUsername]),
                 allow;
             true -> 
-                lager:error("Realm:~p from topic mismatches realm:~p", [RealmFromTopic, RealmFromUsername]),
+                logger:error("Realm:~p from topic mismatches realm:~p", [RealmFromTopic, RealmFromUsername]),
                 deny
         end
     end.
