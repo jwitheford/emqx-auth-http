@@ -38,7 +38,7 @@ check(Credentials, Password, #{auth_req := #http_request{method = Method, url = 
     Params1 = feedvar(feedvar(Params, Credentials), "%P", Password),
     case request2IDrest(Method, Url, Params1) of
         {ok, 200, "ignore"} -> ignore;
-        {ok, 200, _Body}  -> {ok, is_superuser(SuperReq, Credentials)};
+        {ok, 200, _Body}  -> {ok, success};
         {ok, Code, _Body} -> {error, Code};
         {error, Error}    -> logger:error("HTTP ~s Error: ~p", [Url, Error]),
                              {error, Error}
